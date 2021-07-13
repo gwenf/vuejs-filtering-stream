@@ -1,26 +1,83 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <div class="half">
+      <Filters
+        :filterPosts="filterPosts"
+        :search="search"
+        :filteredPosts="filteredPosts"
+      />
+    </div>
+    <div class="half">
+      <Posts :posts="posts" />
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Filters from './components/Filters.vue'
+import Posts from './components/Posts.vue'
+
+import MOCK_DATA from './MOCK_DATA.json'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Filters,
+    Posts
+  },
+  data () {
+    return {
+      posts: MOCK_DATA,
+      str: '',
+      type: ''
+    }
+  },
+  // computed: {
+  //   filteredPosts: {
+  //     get () {
+  //       return this.posts
+  //     },
+  //     set () {
+  //       this.posts = MOCK_DATA
+  //       const results = this.posts.filter((post) => {
+  //         if (this.type === "filter") {
+  //           return post.category === this.str
+  //         } else {
+  //           return post.title.toLowerCase().includes(this.str.toLowerCase())
+  //         }
+  //       })
+  //       this.posts = results
+  //     }
+  //   }
+  // },
+  methods: {
+    filterPosts (catName) {
+      this.resetPosts()
+      if (catName !== 'All') {
+        this.posts = this.posts.filter((post) => {
+          return post.category === catName
+        })
+      }
+    },
+    search (term) {
+      this.resetPosts()
+      this.posts = this.posts.filter((post) => {
+        return post.title.toLowerCase().includes(term.toLowerCase())
+      })
+    },
+    resetPosts () {
+      this.posts = MOCK_DATA
+    }
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style scoped>
+.container {
+  display: flex;
+  margin: 20px;
+}
+.half {
+  width: 40%;
 }
 </style>
